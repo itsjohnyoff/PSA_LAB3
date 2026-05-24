@@ -56,6 +56,61 @@ and wait for the next customer to arrive. We determine:
 
 The simulated expected waiting time closely matches the theoretical value of $10$ minutes. Despite arriving at a late hour ($T = 50$), the time we wait for the next customer does not depend on when the last customer arrived or how long the store has been open. The simulation results converge to the theoretical expectation as $N \to \infty$ by the Law of Large Numbers, verifying the memoryless property of the Poisson process.
 
+## Problem 2 – Continuous Conditional Probability
+
+### Problem Statement
+
+A dart is thrown uniformly at random onto a circular target of radius 10 inches centered at the origin. Given that the dart lands in the upper half of the target ($y > 0$), we determine the following conditional probabilities:
+1. The dart lands in the right half of the target ($x > 0$).
+2. The distance from the center is less than 5 inches.
+3. The distance from the center is greater than 5 inches.
+4. The dart lands within 5 inches of the point $(0, 5)$.
+
+### Mathematical Background
+
+* **Geometric Probability**: For a uniform distribution over a region $C \subset \mathbb{R}^2$, the probability of the dart landing in a subregion $A \subseteq C$ is proportional to its area:
+  $$P(A) = \frac{\text{Area}(A)}{\text{Area}(C)}$$
+* **Conditional Probability**: The probability of event $E$ given the conditioning event $U$ is:
+  $$P(E \mid U) = \frac{P(E \cap U)}{P(U)} = \frac{\text{Area}(E \cap U)}{\text{Area}(U)}$$
+  For a circular target of radius $R = 10$, the upper half $U$ is a semicircle with area $\text{Area}(U) = \frac{1}{2} \pi R^2 = 50\pi$ square inches.
+* **Area-Based Calculations**:
+  - **Part A (Right Half)**: The region $R_h \cap U$ is the upper-right quadrant of the circle.
+    $$\text{Area}(R_h \cap U) = \frac{1}{4} \pi R^2 = 25\pi \implies P(R_h \mid U) = \frac{25\pi}{50\pi} = 0.5000$$
+  - **Part B (Distance < 5)**: The region $D_{<5} \cap U$ is a semicircle of radius $r = 5$.
+    $$\text{Area}(D_{<5} \cap U) = \frac{1}{2} \pi r^2 = 12.5\pi \implies P(D_{<5} \mid U) = \frac{12.5\pi}{50\pi} = 0.2500$$
+  - **Part C (Distance > 5)**: This is the complement of Part B:
+    $$P(D_{>5} \mid U) = 1 - P(D_{<5} \mid U) = 1 - 0.2500 = 0.7500$$
+  - **Part D (Within 5 of (0,5))**: The shifted circle $C_P$ of radius $r = 5$ centered at $P = (0, 5)$ lies entirely in the upper half-plane ($y \ge 0$) and inside the target disk. Thus, the intersection region is the entire disk $C_P$.
+    $$\text{Area}(C_P \cap U) = \pi r^2 = 25\pi \implies P(\text{within 5 of } (0,5) \mid U) = \frac{25\pi}{50\pi} = 0.5000$$
+
+### Methodology
+
+* **Theoretical Derivation**: Derived using geometric area ratios as shown in the Mathematical Background section.
+* **Monte Carlo Simulation**: 
+  - $N = 1,000,000$ points are sampled uniformly in the bounding box $[-10, 10] \times [-10, 10]$.
+  - Points outside the circular target (distance $> 10$) are rejected.
+  - Darts landing in the upper half ($y > 0$) are selected to form the conditioning set $U$.
+  - The conditional probabilities are estimated as the fraction of conditioning darts that satisfy each respective subregion criteria.
+
+### Output
+
+* **Theoretical Probabilities**:
+  - Part A (Right half): $0.5000$
+  - Part B (Distance < 5): $0.2500$
+  - Part C (Distance > 5): $0.7500$
+  - Part D (Within 5 of (0,5)): $0.5000$
+* **Simulated Probabilities**:
+  - Part A (Right half): $\approx 0.5004$
+  - Part B (Distance < 5): $\approx 0.2498$
+  - Part C (Distance > 5): $\approx 0.7502$
+  - Part D (Within 5 of (0,5)): $\approx 0.4989$
+
+![Dart Board Simulation Regions](dart_simulation_regions.png)
+
+### Interpretation
+
+As the number of simulated trials increases, the relative frequency of darts landing within each subregion approaches the ratio of the subregion's area to the semicircle's area. This empirical convergence to the theoretical probability is guaranteed by the Law of Large Numbers, verifying that the physical simulation correctly models the geometric probability space.
+
 ## Installation
 
 Ensure you have Python 3 and the required libraries installed:
@@ -66,10 +121,14 @@ pip install numpy matplotlib
 
 ## Usage
 
-To run the simulation and display the results:
+To run the simulations and view the results/plots:
 
 ```bash
+# Problem 1
 python problem1.py
+
+# Problem 2
+python problem2.py
 ```
 
 ## Repository Structure
@@ -77,8 +136,10 @@ python problem1.py
 ```
 ├── .gitignore                      # Git ignore patterns
 ├── README.md                       # Laboratory documentation
-├── problem1.py                     # Python simulation script
-└── waiting_time_distribution.png   # Generated visualization plot
+├── problem1.py                     # Problem 1 simulation script
+├── problem2.py                     # Problem 2 simulation script
+├── waiting_time_distribution.png   # Problem 1 visualization plot
+└── dart_simulation_regions.png     # Problem 2 visualization plot
 ```
 
 ## Technologies Used
@@ -92,4 +153,6 @@ python problem1.py
 * Poisson Process
 * Exponential Distribution
 * Memoryless Property
+* Geometric Probability
+* Continuous Conditional Probability
 * Monte Carlo Simulation
