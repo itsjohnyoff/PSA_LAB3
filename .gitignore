@@ -1,0 +1,21 @@
+# Python bytecode/cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE/Editor configs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Unrelated data files
+tweets.json
