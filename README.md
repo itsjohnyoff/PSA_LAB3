@@ -111,6 +111,49 @@ A dart is thrown uniformly at random onto a circular target of radius 10 inches 
 
 As the number of simulated trials increases, the relative frequency of darts landing within each subregion approaches the ratio of the subregion's area to the semicircle's area. This empirical convergence to the theoretical probability is guaranteed by the Law of Large Numbers, verifying that the physical simulation correctly models the geometric probability space.
 
+## Problem 3 – Counting
+
+### Problem Statement
+
+In a theater with 100 seats, 100 ticketed people line up to board. 
+* The first person loses their ticket and chooses a random seat uniformly at random.
+* Each subsequent person sits in their assigned seat if it is available.
+* If their assigned seat is already occupied, they choose a random available seat from the remaining empty seats.
+
+We determine the probability that the last person in line sits in their assigned seat.
+
+### Mathematical Background
+
+* **Random Seating Process**: While the intermediate seat choices appear complex, the problem reduces to a simple symmetry.
+* **Symmetry Argument**:
+  - Whenever a passenger is forced to choose a random seat, they choose from a set of available seats that always includes **seat 1** (assigned to the first person) and **seat 100** (assigned to the last person).
+  - If a passenger chooses **seat 1**, the displacement loop is closed, and all remaining passengers sit in their correct seats. The last person is guaranteed to get seat 100.
+  - If a passenger chooses **seat 100**, the last person's seat is occupied, and they cannot sit in it.
+  - If a passenger chooses any intermediate seat $k$ ($1 < k < 100$), the decision is deferred: Person $k$ will be displaced when boarding and will make a new random choice.
+  - Intermediate seats cancel out from the probability calculation because choosing them only delays the outcome. The process is guaranteed to end when someone chooses either seat 1 or seat 100.
+* **Theoretical Probability**: Since seat 1 and seat 100 are chosen with equal probability at any random selection step:
+  $$P(\text{Last passenger sits in assigned seat}) = 0.5000 \quad (50\%)$$
+
+### Methodology
+
+* **Theoretical Reasoning**: Analyzed using the symmetry argument where the outcome is decided by whether seat 1 or seat 100 is chosen first.
+* **Monte Carlo Simulation**:
+  - The boarding process is simulated for 100,000 trials.
+  - Seat allocations are tracked dynamically using list operations.
+  - The fraction of trials where the last passenger occupies their assigned seat provides the simulated probability estimate.
+  - The running probability is plotted to show convergence.
+
+### Output
+
+* **Theoretical Probability**: $0.5000$ (50.0%)
+* **Simulated Probability**: $\approx 0.5001$ (50.01%) (varies slightly per run)
+
+![Theater Seating Convergence](theater_seating_convergence.png)
+
+### Interpretation
+
+The simulated probability converges to exactly $0.5000$ as the number of trials increases. The visualization demonstrates that for small numbers of trials, the estimate exhibits high variance, but stabilizes around the theoretical probability line of $0.5$, demonstrating the Law of Large Numbers.
+
 ## Installation
 
 Ensure you have Python 3 and the required libraries installed:
@@ -129,6 +172,9 @@ python problem1.py
 
 # Problem 2
 python problem2.py
+
+# Problem 3
+python problem3.py
 ```
 
 ## Repository Structure
@@ -138,8 +184,10 @@ python problem2.py
 ├── README.md                       # Laboratory documentation
 ├── problem1.py                     # Problem 1 simulation script
 ├── problem2.py                     # Problem 2 simulation script
+├── problem3.py                     # Problem 3 simulation script
 ├── waiting_time_distribution.png   # Problem 1 visualization plot
-└── dart_simulation_regions.png     # Problem 2 visualization plot
+├── dart_simulation_regions.png     # Problem 2 visualization plot
+└── theater_seating_convergence.png # Problem 3 visualization plot
 ```
 
 ## Technologies Used
@@ -155,4 +203,5 @@ python problem2.py
 * Memoryless Property
 * Geometric Probability
 * Continuous Conditional Probability
+* Symmetry Argument
 * Monte Carlo Simulation
