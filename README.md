@@ -154,17 +154,95 @@ We determine the probability that the last person in line sits in their assigned
 
 The simulated probability converges to exactly $0.5000$ as the number of trials increases. The visualization demonstrates that for small numbers of trials, the estimate exhibits high variance, but stabilizes around the theoretical probability line of $0.5$, demonstrating the Law of Large Numbers.
 
+## Problem 4 – Networking
+
+### Overview
+
+This problem applies natural language processing (NLP) techniques to a real-world tweets dataset. It covers word frequency analysis, part-of-speech tagging, popularity scoring, and typing prediction using bigram statistics.
+
+### Dataset
+
+The data is stored in `tweets.json`, containing tweet objects with the following fields:
+* `id` – unique tweet identifier
+* `text` – the tweet content
+* `created_at` – timestamp of the tweet
+* `likes` – number of likes
+* `retweets` – number of retweets
+
+### Part A – Word Frequency and Popularity
+
+#### 4.1 Popular
+
+Prints the 10 most frequently used words across all tweets. Text is tokenized using NLTK, URLs and @mentions are removed, and punctuation is stripped.
+
+#### 4.2 Nouns
+
+Prints the 10 most frequently used common nouns. Nouns are identified using NLTK's part-of-speech tagger (POS tags `NN`, `NNS`).
+
+#### 4.3 Proper Nouns
+
+Prints the 10 most frequently used proper nouns. Proper nouns are identified using POS tags `NNP` and `NNPS`, and their original capitalization is preserved.
+
+#### 4.4 Frequency
+
+Given a word as input, draws a bar chart where each bar represents one month, showing how frequently the word appears across time.
+
+#### 4.5 Popularity
+
+For each noun, a popularity score is computed using the formula:
+
+$$\text{score} = \text{frequency} \times (1.4 + \text{normRetweet}) \times (1.2 + \text{normLikes})$$
+
+where:
+* `frequency` is the total number of occurrences of the noun across all tweets.
+* `normRetweet` and `normLikes` are the cumulative retweets and likes (summed across all tweets mentioning the noun), normalized to $[0, 1]$ by dividing by the maximum value across all nouns.
+
+The 10 most popular nouns are printed with their scores.
+
+### Part B – Typing Prediction
+
+#### 4.6 Suggestion
+
+Given a partial word (prefix) as input, prints 3 word suggestions ranked by global frequency in the dataset.
+
+#### 4.7 Suggestion Occurrences
+
+Given a complete word as input, prints 3 next-word suggestions based on bigram co-occurrences in the dataset. The suggestions are ranked by how often each word follows the input word.
+
+### Methodology
+
+* **JSON Parsing**: Tweets are loaded from `tweets.json` and processed in a single pass.
+* **Tokenization**: NLTK's `word_tokenize` splits tweet text into tokens. URLs and @mentions are removed via regex before tokenization.
+* **Part-of-Speech Tagging**: NLTK's `pos_tag` assigns POS tags to each token, enabling noun and proper noun extraction.
+* **Frequency Counting**: `collections.Counter` is used for efficient word, noun, and proper noun frequency counting.
+* **Popularity Scoring**: Likes and retweets are accumulated per word across all tweets, max-normalized, and combined with frequency using the assignment formula.
+* **Suggestion Ranking**: Prefix-based suggestions use global word frequency. Next-word suggestions use bigram occurrence counts.
+
+### Output
+
+* **4.1–4.3**: Top 10 lists printed to the console with word and frequency count.
+* **4.4**: A Matplotlib bar chart showing monthly frequency for a given word.
+* **4.5**: Top 10 nouns with their computed popularity scores.
+* **4.6**: 3 autocomplete suggestions based on prefix matching and frequency.
+* **4.7**: 3 next-word predictions based on bigram co-occurrences.
+
+### Interpretation
+
+The word frequency analysis reveals common vocabulary patterns in the tweet corpus. The popularity formula weights nouns not just by raw frequency but also by social engagement (likes and retweets), surfacing words that generate high interaction. The typing prediction tasks demonstrate that simple statistical models (frequency ranking and bigram counts) can provide meaningful suggestions for text input.
+
 ## Installation
 
 Ensure you have Python 3 and the required libraries installed:
 
 ```bash
-pip install numpy matplotlib
+pip install numpy matplotlib nltk
 ```
+
+NLTK data packages (`punkt_tab`, `averaged_perceptron_tagger_eng`) are downloaded automatically on first run.
 
 ## Usage
 
-To run the simulations and view the results/plots:
+To run the simulations and view the results:
 
 ```bash
 # Problem 1
@@ -175,6 +253,15 @@ python problem2.py
 
 # Problem 3
 python problem3.py
+
+# Problem 4
+python problem_4_1.py    # Top 10 words
+python problem_4_2.py    # Top 10 nouns
+python problem_4_3.py    # Top 10 proper nouns
+python problem_4_4.py    # Monthly frequency chart (interactive)
+python problem_4_5.py    # Top 10 popular nouns
+python problem_4_6.py    # Prefix suggestion (interactive)
+python problem_4_7.py    # Next-word suggestion (interactive)
 ```
 
 ## Repository Structure
@@ -185,9 +272,18 @@ python problem3.py
 ├── problem1.py                     # Problem 1 simulation script
 ├── problem2.py                     # Problem 2 simulation script
 ├── problem3.py                     # Problem 3 simulation script
-├── waiting_time_distribution.png   # Problem 1 visualization plot
-├── dart_simulation_regions.png     # Problem 2 visualization plot
-└── theater_seating_convergence.png # Problem 3 visualization plot
+├── tweet_analyzer.py               # Shared NLP analysis module
+├── problem_4_1.py                  # 4.1 Top 10 words
+├── problem_4_2.py                  # 4.2 Top 10 nouns
+├── problem_4_3.py                  # 4.3 Top 10 proper nouns
+├── problem_4_4.py                  # 4.4 Monthly frequency chart
+├── problem_4_5.py                  # 4.5 Noun popularity scoring
+├── problem_4_6.py                  # 4.6 Prefix suggestion
+├── problem_4_7.py                  # 4.7 Next-word suggestion
+├── tweets.json                     # Tweet dataset
+├── waiting_time_distribution.png   # Problem 1 visualization
+├── dart_simulation_regions.png     # Problem 2 visualization
+└── theater_seating_convergence.png # Problem 3 visualization
 ```
 
 ## Technologies Used
@@ -195,6 +291,7 @@ python problem3.py
 * Python 3
 * NumPy
 * Matplotlib
+* NLTK
 
 ## Key Concepts
 
@@ -204,4 +301,8 @@ python problem3.py
 * Geometric Probability
 * Continuous Conditional Probability
 * Symmetry Argument
+* Natural Language Processing
+* Part-of-Speech Tagging
+* Word Frequency Analysis
+* Bigram Language Model
 * Monte Carlo Simulation
