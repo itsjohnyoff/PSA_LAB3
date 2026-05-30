@@ -54,6 +54,8 @@ def clean_and_tokenize():
                 continue
 
             clean_word_lower = clean_word.lower()
+            if clean_word_lower == "rt" or clean_word_lower.isdigit():
+                continue
             cleaned_tweet_words.append(clean_word_lower)
             all_words.append(clean_word_lower)
 
